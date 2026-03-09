@@ -25,5 +25,8 @@
 		"@tailwindcss/vite": "^4.2.1",
 		"daisyui": "^5.5.19",
 		"tailwindcss": "^4.2.1"
+	},
+	"dependencies": {
+		"@webext-core/proxy-service": "^2.0.0"
 	}
 }

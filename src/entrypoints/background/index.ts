@@ -1,4 +1,15 @@
 import { openOrFocusTab } from './utils'
+import { onMessage } from 'webext-bridge/background'
+
+import { registerService } from '@webext-core/proxy-service'
+import { TestService } from './utils'
+import { TEST_SERVICE_KEY } from './keys'
+
+// 3. Instantiate your service
+const testService = new TestService()
+
+// 4. Register the service BEFORE awaiting anything
+registerService(TEST_SERVICE_KEY, testService)
 
 let loopOneCounter = 0
 
@@ -7,10 +18,10 @@ export default defineBackground(() => {
 
 	// background recurring timer
 
-	let loopOne = setInterval(() => {
-		console.log('in interval one', { loopOneCounter })
-		loopOneCounter++
-	}, 5000)
+	// let loopOne = setInterval(() => {
+	// 	console.log('in interval one', { loopOneCounter })
+	// 	loopOneCounter++
+	// }, 5000)
 
 	// browser action onClick handler
 	browser.action.onClicked.addListener(async (event) => {
