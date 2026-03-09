@@ -1,8 +1,18 @@
 import { openOrFocusTab } from './utils'
 
+let loopOneCounter = 0
+
 export default defineBackground(() => {
 	console.log('Hello background!', { id: browser.runtime.id })
 
+	// background recurring timer
+
+	let loopOne = setInterval(() => {
+		console.log('in interval one', { loopOneCounter })
+		loopOneCounter++
+	}, 5000)
+
+	// browser action onClick handler
 	browser.action.onClicked.addListener(async (event) => {
 		const tabUrl = browser.runtime.getURL('/tab.html')
 
