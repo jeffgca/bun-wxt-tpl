@@ -20,4 +20,13 @@ export class TestService {
 			}, 100)
 		})
 	}
+
+	async fetchData(): Promise<string> {
+		let res = await fetch('https://www.eko-recordings.ca/data/index.json')
+
+		if (!res.ok) {
+			return 'Error fetching data: ' + res.status
+		}
+		return await res.json()
+	}
 }

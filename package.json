@@ -27,6 +27,8 @@
 		"tailwindcss": "^4.2.1"
 	},
 	"dependencies": {
-		"@webext-core/proxy-service": "^2.0.0"
+		"@tailwindcss/typography": "^0.5.19",
+		"@webext-core/proxy-service": "^2.0.0",
+		"@zerodevx/svelte-json-view": "^1.0.11"
 	}
 }
