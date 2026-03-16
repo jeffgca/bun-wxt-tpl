@@ -29,4 +29,11 @@ export class TestService {
 		}
 		return await res.json()
 	}
+
+	on(event: string, callback: (message: string, data: {}) => void) {
+		// Simulate some event that triggers the callback
+
+		// if (!)
+		this.eventListeners.push(callback)
+	}
 }

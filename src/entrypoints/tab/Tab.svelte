@@ -9,9 +9,20 @@
 	const testService = createProxyService(TEST_SERVICE_KEY)
 
 	let loadingLabel = 'Loading...'
-	let json = []
+	let json = $state([])
 
 	let result = loadingLabel
+
+	async function foo() {
+		return new Promise((resolve) => {
+			setTimeout(() => {
+				resolve('Hello from foo!')
+			}, 200)
+		})
+	}
+
+	let result2 = await foo()
+	console.log('result2', result2)
 
 	function handleClick() {
 		json = {}

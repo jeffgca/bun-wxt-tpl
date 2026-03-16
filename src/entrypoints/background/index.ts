@@ -1,27 +1,32 @@
 import { openOrFocusTab } from './utils'
 import { onMessage } from 'webext-bridge/background'
-
 import { registerService } from '@webext-core/proxy-service'
 import { TestService } from './utils'
 import { TEST_SERVICE_KEY } from './keys'
 
-// 3. Instantiate your service
-const testService = new TestService()
-
-// 4. Register the service BEFORE awaiting anything
-registerService(TEST_SERVICE_KEY, testService)
-
 let loopOneCounter = 0
 
+const IS_FIREFOX = import.meta.env.BROWSER === 'firefox'
+
 export default defineBackground(() => {
-	console.log('Hello background!', { id: browser.runtime.id })
+	// 3. Instantiate your service
+	const testService = new TestService()
+
+	// 4. Register the service BEFORE awaiting anything
+	registerService(TEST_SERVICE_KEY, testService)
+
+	console.log(
+		'Hello background!',
+		{ id: browser.runtime.id },
+		{ isFirefox: IS_FIREFOX },
+	)
 
 	// background recurring timer
 
-	// let loopOne = setInterval(() => {
-	// 	console.log('in interval one', { loopOneCounter })
-	// 	loopOneCounter++
-	// }, 5000)
+	let loopOne = setInterval(() => {
+		console.log('in interval one', { loopOneCounter })
+		loopOneCounter++
+	}, 5000)
 
 	// browser action onClick handler
 	browser.action.onClicked.addListener(async (event) => {
