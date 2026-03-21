@@ -36,4 +36,17 @@ export class TestService {
 		// if (!)
 		this.eventListeners.push(callback)
 	}
+
+	async testConnection() {
+		// Simulate a connection test
+		try {
+			let result = await fetch('https://www.eko-recordings.ca/data/index.json')
+			if (result.ok) {
+				return 'Connection successful'
+			}
+			return 'Connection failed with status: ' + result.status
+		} catch (Err) {
+			return 'Connection error: ' + Err.message
+		}
+	}
 }

@@ -7,10 +7,10 @@ const app = mount(App, {
 })
 
 // Handle local IP discovery requests from background script
-browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-	console.log('message type', message.type, 'sender', sender)
-	await sendResponse({
-		type: 'tab-message',
-		message: 'Hello from the tab script!',
-	})
-})
+// browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+// 	// console.log('message type', message.type, 'sender', sender)
+// 	await sendResponse({
+// 		type: 'tab-message',
+// 		message: 'Hello from the tab script!',
+// 	})
+// })

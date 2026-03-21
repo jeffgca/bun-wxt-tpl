@@ -4,7 +4,8 @@ import { registerService } from '@webext-core/proxy-service'
 import { TestService } from './utils'
 import { TEST_SERVICE_KEY } from './keys'
 
-let loopOneCounter = 0
+let loopOneCounter = 0,
+	loop = false
 
 const IS_FIREFOX = import.meta.env.BROWSER === 'firefox'
 
@@ -21,18 +22,24 @@ export default defineBackground(() => {
 		{ isFirefox: IS_FIREFOX },
 	)
 
-	// background recurring timer
+	browser.runtime.onMessage.addListener(async (message, sender) => {
+		console.log('Received message in background:', message, sender)
 
-	let loopOne = setInterval(() => {
-		console.log('in interval one', { loopOneCounter })
-		loopOneCounter++
-	}, 5000)
+		if (message.type === 'PING_FROM_TAB') {
+			const result = await testService.testConnection()
+			console.log('Connection test result:', result)
+			return result
+
+			browser.tabs.sendMessage(sender.tab!.id!, {
+				type: 'PONG_FROM_BACKGROUND',
+				result,
+			})
+		}
+	})
 
 	// browser action onClick handler
 	browser.action.onClicked.addListener(async (event) => {
 		const tabUrl = browser.runtime.getURL('/tab.html')
-
-		console.log('clicked', event)
 
 		// Query all tabs to find if one with our page is already open
 		const tabs = await browser.tabs.query({})
@@ -40,14 +47,14 @@ export default defineBackground(() => {
 
 		if (existingTab && existingTab.id) {
 			// Tab already open - switch to it
-			await browser.tabs.update(existingTab.id, { active: true })
+			browser.tabs.update(existingTab.id, { active: true })
 			// Also bring the window to focus if the tab is in a different window
 			if (existingTab.windowId) {
-				await browser.windows.update(existingTab.windowId, { focused: true })
+				browser.windows.update(existingTab.windowId, { focused: true })
 			}
 		} else {
 			// Tab not open - create a new one
-			await browser.tabs.create({
+			browser.tabs.create({
 				url: tabUrl,
 			})
 		}

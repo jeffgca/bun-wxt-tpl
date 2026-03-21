@@ -10,7 +10,6 @@ export default defineConfig({
 		permissions: ['storage', 'tabs', 'activeTab', 'alarms'],
 		action: {
 			default_title: 'Wxt / Bun / Svelte Template',
-			// No default_popup - clicking the button will be handled by the background script
 		},
 	},
 	svelte: {
