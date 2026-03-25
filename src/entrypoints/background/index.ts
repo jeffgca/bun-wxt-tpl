@@ -37,8 +37,10 @@ export default defineBackground(() => {
 		}
 	})
 
+	console.log('browser', Object.keys(browser))
+
 	// browser action onClick handler
-	browser.action.onClicked.addListener(async (event) => {
+	chrome.browserAction.onClicked.addListener(async (event) => {
 		const tabUrl = browser.runtime.getURL('/tab.html')
 
 		// Query all tabs to find if one with our page is already open

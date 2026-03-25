@@ -58,6 +58,7 @@
 		browser.runtime.sendMessage({
 			type: 'PING_FROM_TAB',
 			payload: 'Hello from the tab!',
+			timestamp: Date.now(),
 		})
 
 		// setInterval(async () => {
