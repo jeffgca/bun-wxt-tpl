@@ -15,6 +15,8 @@
 
 	let connectedLabel = $state(emoji.no)
 
+	$inspect(connectedLabel)
+
 	let result = $state('Loading...')
 	let json = $state([])
 
@@ -23,31 +25,23 @@
 		isConnected: false,
 	})
 
-	// async function foo() {
-	// 	return new Promise((resolve) => {
-	// 		setTimeout(() => {
-	// 			resolve('Hello from foo!')
-	// 		}, 200)
-	// 	})
-	// }
-
-	// let result2 = await foo()
-	// console.log('result2', result2)
-
 	browser.runtime.onMessage.addListener((message) => {
-		if (message.type === 'UPDATE_PING') {
+		console.log('message from backghround', message)
+		if (message.type === 'PONG_FROM_BACKGROUND') {
 			console.log('Received message in tab:', message.payload)
 		}
 	})
 
 	function handleClick() {
 		json = {}
+
 		testService
 			.fetchData()
 			.then((res) => {
 				json = res
 			})
 			.catch((err) => {
+				console.error('Error fetching data:', err)
 				json = { error: err.message }
 			})
 	}
@@ -55,16 +49,20 @@
 	onMount(async () => {
 		result = 'Loading from onMount...'
 
-		browser.runtime.sendMessage({
-			type: 'PING_FROM_TAB',
-			payload: 'Hello from the tab!',
-			timestamp: Date.now(),
-		})
+		// browser.runtime.sendMessage({
+		// 	type: 'PING_FROM_TAB',
+		// 	payload: 'Hello from the tab!',
+		// 	timestamp: Date.now(),
+		// })
 
-		// setInterval(async () => {
-		// 	result = await testService.sayHello()
-		// 	console.log('testService', result)
-		// }, 5000)
+		let isConnected = await testService.testConnection()
+		connectedLabel = isConnected ? emoji.yes : emoji.no
+
+		setTimeout(async () => {
+			console.log('saying hello?')
+			result = await testService.sayHello()
+			console.log('testService', result)
+		}, 500)
 	})
 </script>
 

@@ -1,13 +1,8 @@
-/**
- * Utility function to open a new tab with the specified URL or focus it if it's already open.
- */
-export async function openOrFocusTab(url: string) {
-	console.log('openOrFocusTab', url)
-
-	// TBD
-}
-
 export class TestService {
+	async ping() {
+		return 'pong'
+	}
+
 	async sayHello(forcError = false): Promise<string> {
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
@@ -22,9 +17,11 @@ export class TestService {
 	}
 
 	async fetchData(): Promise<string> {
+		console.log('in fetchData')
 		let res = await fetch('https://www.eko-recordings.ca/data/index.json')
 
 		if (!res.ok) {
+			console.log('XXX res', res)
 			return 'Error fetching data: ' + res.status
 		}
 		return await res.json()

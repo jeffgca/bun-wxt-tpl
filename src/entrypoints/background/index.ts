@@ -22,43 +22,47 @@ export default defineBackground(() => {
 		{ isFirefox: IS_FIREFOX },
 	)
 
-	browser.runtime.onMessage.addListener(async (message, sender) => {
-		console.log('Received message in background:', message, sender)
+	// testService.testConnection().then((result) => {
+	// 	console.log('Initial connection test result:', result)
+	// })
 
-		if (message.type === 'PING_FROM_TAB') {
-			const result = await testService.testConnection()
-			console.log('Connection test result:', result)
-			return result
+	// browser.runtime.onMessage.addListener(async (message, sender) => {
+	// 	console.log('Received message in background:', message)
 
-			browser.tabs.sendMessage(sender.tab!.id!, {
-				type: 'PONG_FROM_BACKGROUND',
-				result,
-			})
-		}
-	})
+	// 	if (message.type === 'PING_FROM_TAB') {
+	// 		const result = await testService.testConnection()
+	// 		console.log('Connection test result:', result)
+	// 		return result
 
-	console.log('browser', Object.keys(browser))
+	// 		browser.tabs.sendMessage(sender.tab!.id!, {
+	// 			type: 'PONG_FROM_BACKGROUND',
+	// 			result,
+	// 		})
+	// 	}
+	// })
 
-	// browser action onClick handler
-	chrome.browserAction.onClicked.addListener(async (event) => {
+	function actionHandler(event) {
 		const tabUrl = browser.runtime.getURL('/tab.html')
-
 		// Query all tabs to find if one with our page is already open
-		const tabs = await browser.tabs.query({})
-		const existingTab = tabs.find((tab) => tab.url === tabUrl)
-
-		if (existingTab && existingTab.id) {
-			// Tab already open - switch to it
-			browser.tabs.update(existingTab.id, { active: true })
-			// Also bring the window to focus if the tab is in a different window
-			if (existingTab.windowId) {
-				browser.windows.update(existingTab.windowId, { focused: true })
+		browser.tabs.query({}).then((tabs) => {
+			const existingTab = tabs.find((tab) => tab.url === tabUrl)
+			if (existingTab && existingTab.id) {
+				// Tab already open - switch to it
+				browser.tabs.update(existingTab.id, { active: true })
+				// Also bring the window to focus if the tab is in a different window
+				if (existingTab.windowId) {
+					browser.windows.update(existingTab.windowId, { focused: true })
+				}
+			} else {
+				// Tab not open - create a new one
+				browser.tabs.create({
+					url: tabUrl,
+				})
 			}
-		} else {
-			// Tab not open - create a new one
-			browser.tabs.create({
-				url: tabUrl,
-			})
-		}
-	})
+		})
+	}
+
+	;(browser.action ?? browser.browser_action).onClicked.addListener(
+		actionHandler,
+	)
 })
