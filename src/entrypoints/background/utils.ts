@@ -2,7 +2,6 @@ export class TestService {
 	constructor() {
 		this.currentRecord = {}
 		this.eventListeners = {}
-		this.validEvents = ['recordUpdated']
 	}
 
 	async ping() {
@@ -25,9 +24,12 @@ export class TestService {
 	setRecord(record: unknown) {
 		console.log('Record set in TestService:', record)
 		this.currentRecord = record
-		this.eventListeners['recordUpdated'].forEach((callback) =>
-			callback('recordUpdated', { record }),
-		)
+
+		if (this.eventListeners['recordUpdated']) {
+			this.eventListeners['recordUpdated'].forEach((callback) =>
+				callback('recordUpdated', { record }),
+			)
+		}
 	}
 
 	async fetchData(): Promise<string> {
@@ -41,27 +43,6 @@ export class TestService {
 		return await res.json()
 	}
 
-	on(event: string, callback: (message: string, data: {}) => void) {
-		// Simulate some event that triggers the callback
-
-		console.log('event triggered in utils', event)
-
-		if (!this.eventListeners[event]) {
-			this.eventListeners[event] = []
-		}
-
-		// if (!)
-		this.eventListeners[event].push(callback)
-	}
-
-	clear(event: string, callback: (message: string, data: {}) => void) {
-		this.eventListeners = this.eventListeners.filter((cb) => cb !== callback)
-	}
-
-	clearAllListeners(event: string) {
-		this.eventListeners[event] = []
-	}
-
 	async testConnection() {
 		// Simulate a connection test
 		try {
@@ -73,5 +54,21 @@ export class TestService {
 		} catch (Err) {
 			return 'Connection error: ' + Err.message
 		}
+	}
+
+	onUpdateState(callback: (event: string, data: unknown) => void) {
+		if (!this.eventListeners['recordUpdated']) {
+			this.eventListeners['recordUpdated'] = []
+		}
+		this.eventListeners['recordUpdated'].push(callback)
+	}
+
+	async updateState() {
+		// Simulate fetching some state and then triggering an update
+		let newRecord = {
+			timestamp: Date.now(),
+			value: Math.random(),
+		}
+		this.setRecord(newRecord)
 	}
 }

@@ -10,11 +10,6 @@
 	// 5. Get a proxy of your service
 	const testService = createProxyService(TEST_SERVICE_KEY)
 
-	// testService.on('recordUpdated', (data) => {
-	// 	console.log('Record updated event received in tab:', data)
-	// 	currentRecord = data.record
-	// })
-
 	const emoji = {
 		yes: '✅',
 		no: '❌',
@@ -36,7 +31,7 @@
 		console.log('message from backghround', message)
 		if (message.type === 'PONG_FROM_BACKGROUND') {
 			console.log('Received message in tab:', message.payload)
-		} else if (message.type === 'RECORD_UPDATED') {
+		} else if (message.type === 'RECORD_LOADED') {
 			console.log('Record updated message received in tab:', message.payload)
 			currentRecord = message.payload.data
 		} else if (message.type === 'RECORDS_LOADED') {
@@ -50,31 +45,17 @@
 
 		browser.runtime.sendMessage({
 			type: 'LOAD_RECORDS',
+			src: 'tab',
+			target: 'background',
 		})
-
-		// testService
-		// 	.fetchData()
-		// 	.then((res) => {
-		// 		json = res
-		// 	})
-		// 	.catch((err) => {
-		// 		console.error('Error fetching data:', err)
-		// 		json = { error: err.message }
-		// 	})
 	}
 
 	onMount(async () => {
 		console.log('in onMount')
 		result = 'Loading from onMount...'
 
-		// browser.runtime.sendMessage({
-		// 	type: 'PING_FROM_TAB',
-		// 	payload: 'Hello from the tab!',
-		// 	timestamp: Date.now(),
-		// })
-
 		let isConnected = await testService.testConnection()
-		console.log('XXX isConnected', isConnected)
+		// console.log('XXX isConnected', isConnected)
 		connectedLabel = isConnected ? emoji.yes : emoji.no
 
 		setTimeout(async () => {
@@ -82,6 +63,25 @@
 			result = await testService.sayHello()
 			console.log('testService', result)
 		}, 500)
+
+		browser.runtime.sendMessage({
+			type: 'PING_FROM_TAB',
+			src: 'tab',
+			target: 'background',
+		})
+
+		browser.runtime.sendMessage({
+			type: 'LOAD_RECORDS',
+			src: 'tab',
+			target: 'background',
+		})
+
+		browser.runtime.sendMessage({
+			type: 'LOAD_RECORD',
+			src: 'tab',
+			target: 'background',
+			data: currentRecord,
+		})
 	})
 </script>
 
