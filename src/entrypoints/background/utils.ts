@@ -1,4 +1,10 @@
 export class TestService {
+	constructor() {
+		this.currentRecord = {}
+		this.eventListeners = {}
+		this.validEvents = ['recordUpdated']
+	}
+
 	async ping() {
 		return 'pong'
 	}
@@ -16,6 +22,14 @@ export class TestService {
 		})
 	}
 
+	setRecord(record: unknown) {
+		console.log('Record set in TestService:', record)
+		this.currentRecord = record
+		this.eventListeners['recordUpdated'].forEach((callback) =>
+			callback('recordUpdated', { record }),
+		)
+	}
+
 	async fetchData(): Promise<string> {
 		console.log('in fetchData')
 		let res = await fetch('https://www.eko-recordings.ca/data/index.json')
@@ -30,8 +44,22 @@ export class TestService {
 	on(event: string, callback: (message: string, data: {}) => void) {
 		// Simulate some event that triggers the callback
 
+		console.log('event triggered in utils', event)
+
+		if (!this.eventListeners[event]) {
+			this.eventListeners[event] = []
+		}
+
 		// if (!)
-		this.eventListeners.push(callback)
+		this.eventListeners[event].push(callback)
+	}
+
+	clear(event: string, callback: (message: string, data: {}) => void) {
+		this.eventListeners = this.eventListeners.filter((cb) => cb !== callback)
+	}
+
+	clearAllListeners(event: string) {
+		this.eventListeners[event] = []
 	}
 
 	async testConnection() {
