@@ -81,10 +81,18 @@ export default defineBackground(() => {
 
 	/**
 	 * attach the click handler to the browser action (toolbar button). This uses optional chaining to support both Manifest V2 and V3 APIs (browser.browserAction vs browser.action).
-	 */
-	;(browser.action ?? browser.browser_action).onClicked.addListener(
-		actionHandler,
-	)
+	 */	
+	// ;(browser.action ?? browser.browser_action).onClicked.addListener(
+	// 	actionHandler,
+	// )
+
+	if (Object.keys(browser).includes('action')) {
+		browser.action.onClicked.addListener(actionHandler)
+	} else if (Object.keys(browser).includes('browser_action')) {
+		browser.browser_action.onClicked.addListener(actionHandler)
+	} else {
+		console.error('No action or browserAction API found in browser object')
+	}
 
 	let service = new TestService(),
 		allData = []
