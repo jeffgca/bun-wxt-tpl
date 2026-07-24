@@ -2,7 +2,22 @@
 // Bun Native Messaging host
 // guest271314, 10-9-2022
 
-import { appendFile } from 'node:fs/promises'
+import { appendFile, exists, writeFile } from 'node:fs/promises'
+import path from "node:path";
+
+// Relative to the current file (ESM / TypeScript)
+// const abs1 = path.resolve(import.meta.dirname, "./log/output.txt");
+
+let LOGFILE = path.resolve(import.meta.dirname, './log/nm_bun.log')
+
+console.log('LOGFILE', LOGFILE)
+
+let LOGFILE_EXISTS = await exists(LOGFILE)
+if (!LOGFILE_EXISTS) {
+	await writeFile(LOGFILE, '', 'utf8')
+}
+
+
 
 writeLog('Starting Native Messaging host...').catch(console.error)
 
@@ -18,10 +33,10 @@ export function encodeMessage(message) {
  * @param {string} filePath - Log file path.
  * @returns {Promise<void>} A promise that resolves when the log line is written.
  */
-export async function writeLog(info, filePath = '../log/nm_bun.log') {
+export async function writeLog(info) {
 	const timestamp = new Date().toISOString()
 	const content = typeof info === 'string' ? info : JSON.stringify(info)
-	await appendFile(filePath, `[${timestamp}] ${content}\n`, 'utf8')
+	await appendFile(LOGFILE, `[${timestamp}] ${content}\n`, 'utf8')
 }
 
 /**

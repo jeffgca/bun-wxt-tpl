@@ -25,7 +25,6 @@
 	"contributors": [],
 	"scripts": {
 		"dev": "",
-		"test": "node --experimental-vm-modules node_modules/.bin/jest",
 		"test:stdio": "bun ./test/test_script.ts",
 		"cc": "bun build --compile --outfile=nm_bun.bin nm_bun.js && rm -f ./.*.bun-build"
 	},

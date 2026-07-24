@@ -2,7 +2,7 @@
 // Runs under Bun's test runner (bun test).
 // Bun.file and Bun.write are spied on instead of replacing the read-only global.
 
-import { jest, spyOn, describe, test, expect, beforeEach } from 'bun:test'
+import { spyOn, describe, test, expect, beforeEach } from 'bun:test'
 
 // ---------------------------------------------------------------------------
 // Mock Bun globals before importing the module
@@ -88,7 +88,7 @@ describe('encodeMessage', () => {
 
 describe('getMessage', () => {
 	beforeEach(() => {
-		jest.clearAllMocks()
+		// jest.clearAllMocks()
 		stdinChunks = []
 	})
 
