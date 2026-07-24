@@ -1,11 +1,11 @@
 <script>
-  import { onMount } from "svelte";
+	import { onMount } from 'svelte'
 </script>
 
-<h2>this is tet component</h2>
+<h2>this is test component</h2>
 
 <style>
-  h2 {
-    color: red;
-  }
+	h2 {
+		color: red;
+	}
 </style>
